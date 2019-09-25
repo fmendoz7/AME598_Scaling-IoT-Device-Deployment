@@ -11,7 +11,7 @@ void setup()
     ttgo->eTFT->fillScreen(TFT_BLACK);
     ttgo->eTFT->setTextColor(TFT_WHITE, TFT_BLACK);
     ttgo->eTFT->setTextFont(4);
-    ttgo->eTFT->drawString("Hello World",  5, 10);
+    ttgo->eTFT->drawString("Francis Mendoza",  20, 120);
 }
 
 void loop()
