@@ -11,10 +11,12 @@
         CLASS: AME598- Scaling IOT Device Deployment
         ASSIGNMENT: A3, Tutorial
     </p>
+
     <p>
-        This Tutorial is about configuring a web application that displays a data payload to the webpage, 
+        This Tutorial is about configuring a web application that displays temperature and humidity in real time to the webpage, 
         connected to an Ubuntu server instance using the Amazon EC2 service
     </p>
+
     <p>
         TABLE OF CONTENTS
             1. Instantiating Ubuntu Server Instance
@@ -23,6 +25,15 @@
             4. Linking to MongoDB Compass For Management
             5. Deployment Of Firmware Code
     </p>
+
+    <p>
+        INTRODUCTION
+            * We are essentially running firmware on our ESP32 smartwatch, with our DHT11 sensor attached
+            * The watch relays temperature and humidity data to our webpage in real time 
+            * A very high-level block diagram is attached below describing this 
+            <img src="https://iotdunia.com//wp-content/uploads/2016/09/iot-architecture.jpg" alt="Reference Block Diagram" width="200" height="80">
+    </p>
+
     <p>
         PART 1: INSTANTIATING UBUNTU SERVER INSTANCE
             * Sign into your Amazon AWS account at https://aws.amazon.com/
@@ -41,6 +52,7 @@
     <p>
         PART 2: SECURING UBUNTU SERVER
             * Navigate to instance and click "launch-wizard" link under "Security Groups" header of description tab
+            <img src="">
             * Under "Inbound" tab, click "Edit"
             * Click "Add Rule" and do the following
                 ** Enter port range of 27017
@@ -77,12 +89,15 @@
     </p>
 
     <p>
-        PART 5: DEPLOYMENT OF FIRMWARE CODE
+        PART 5: DEPLOYMENT OF TEMPERATURE AND HUMIDITY FIRMWARE CODE
             * Essentially, your watch-side firmware code will pass data to the relevant HTML and JS files for the webpage
             * Plug in your watch, connected with your USB, into your computer and load the firmware
+            * There are 3 two webpages displaying analytical data for this
+                ** dailyAvg.html
+                ** history.html
             * Push all your files to your github repository
             * Initialize the project by typing in this command
-                # node (~relevant js file)
+                # node server.js
     </p>
 </body>
 </html>
