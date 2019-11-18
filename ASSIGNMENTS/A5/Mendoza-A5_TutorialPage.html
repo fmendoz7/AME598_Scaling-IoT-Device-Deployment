@@ -7,99 +7,99 @@
 </head>
 <body>
     <p>
-        PROGRAMMER: Francis Mendoza
-        CLASS: AME598- Scaling IOT Device Deployment
-        ASSIGNMENT: A3, Tutorial
+        PROGRAMMER: Francis Mendoza <br />
+        CLASS: AME598- Scaling IOT Device Deployment <br />
+        ASSIGNMENT: A3, Tutorial <br />
     </p>
 
     <p>
-        This Tutorial is about configuring a web application that displays temperature and humidity in real time to the webpage, 
-        connected to an Ubuntu server instance using the Amazon EC2 service
+        This Tutorial is about configuring a web application that displays temperature and humidity in real time to the webpage, <br />
+        connected to an Ubuntu server instance using the Amazon EC2 service <br />
     </p>
 
     <p>
-        TABLE OF CONTENTS
-            1. Instantiating Ubuntu Server Instance
-            2. Securing Ubuntu Server
-            3. Creating a MongoDB database
-            4. Linking to MongoDB Compass For Management
-            5. Deployment Of Firmware Code
+        TABLE OF CONTENTS <br />
+            1. Instantiating Ubuntu Server Instance <br />
+            2. Securing Ubuntu Server <br />
+            3. Creating a MongoDB database <br />
+            4. Linking to MongoDB Compass For Management <br />
+            5. Deployment Of Firmware Code <br />
     </p>
 
     <p>
-        INTRODUCTION
-            * We are essentially running firmware on our ESP32 smartwatch, with our DHT11 sensor attached
-            * The watch relays temperature and humidity data to our webpage in real time 
-            * A very high-level block diagram is attached below describing this architecture
-            <img src="https://iotdunia.com//wp-content/uploads/2016/09/iot-architecture.jpg" alt="Reference Block Diagram" width="200" height="80">
-            * Our IOT watch is feeding data to our AWS Ubuntu instance (server), which is relayed to our client (webapp)
+        INTRODUCTION <br />
+            * We are essentially running firmware on our ESP32 smartwatch, with our DHT11 sensor attached <br />
+            * The watch relays temperature and humidity data to our webpage in real time <br />
+            * A very high-level block diagram is attached below describing this architecture <br />
+            <img src="https://iotdunia.com//wp-content/uploads/2016/09/iot-architecture.jpg" alt="Reference Block Diagram" width="400" height="400"> <br />
+            * Our IOT watch is feeding data to our AWS Ubuntu instance (server), which is relayed to our client (webapp) <br />
     </p>
 
     <p>
-        PART 1: INSTANTIATING UBUNTU SERVER INSTANCE
-            * Sign into your Amazon AWS account at https://aws.amazon.com/
-            * Under "All Services", select EC2 link listed under "Compute"
-            <img src="https://restic.readthedocs.io/en/latest/_images/02_aws_menu.png" alt="AWS EC2 Menu" width="200" height="80">
-            * Click the launch instance button, located under the "Create Instance" header
-            * Under the Ubuntu Server item, click "Select"
-            * Ensure you have selected "Free Tier" before clicking "Review and Launch"
-            * In order to access the server, you need to create an SSH Keypair
-                ** NOTE: Be sure to save the .pem file in a memorable and safe location!
-            * Use the following commands to use the keypair to access your server
-                # chmod 400 (~path~)
-                # ssh -i (~path~) ubuntu@(~ip address~)
-            * Enter yes when asking about the authenticity of the host
+        PART 1: INSTANTIATING UBUNTU SERVER INSTANCE <br />
+            * Sign into your Amazon AWS account at https://aws.amazon.com/ <br />
+            * Under "All Services", select EC2 link listed under "Compute" <br />
+            <img src="https://restic.readthedocs.io/en/latest/_images/02_aws_menu.png" alt="AWS EC2 Menu" width="400" height="400"> <br />
+            * Click the launch instance button, located under the "Create Instance" header <br />
+            * Under the Ubuntu Server item, click "Select" <br />
+            * Ensure you have selected "Free Tier" before clicking "Review and Launch" <br />
+            * In order to access the server, you need to create an SSH Keypair <br />
+                ** NOTE: Be sure to save the .pem file in a memorable and safe location! <br />
+            * Use the following commands to use the keypair to access your server <br />
+                # chmod 400 (~path~) <br />
+                # ssh -i (~path~) ubuntu@(~ip address~) <br />
+            * Enter yes when asking about the authenticity of the host <br />
     </p>
 
     <p>
-        PART 2: SECURING UBUNTU SERVER
-            * Navigate to instance and click "launch-wizard" link under "Security Groups" header of description tab
-            <img src="https://media.amazonwebservices.com/blog/2017/sg_rules_desc_3.png" alt="Security Group Menu" width="200" height="80">
-            * Under "Inbound" tab, click "Edit"
-            * Click "Add Rule" and do the following
-                ** Enter port range of 27017
-                ** Select "My IP" option from "Source Drop-Down" menu and ensure it matches
-                    *** NOTE: You can check IP address by searching "What Is My IP" on Google
-            * New security rule should appear under the "Inbound" tab, with server placed behind a firewall
+        PART 2: SECURING UBUNTU SERVER <br />
+            * Navigate to instance and click "launch-wizard" link under "Security Groups" header of description tab <br />
+            <img src="https://media.amazonwebservices.com/blog/2017/sg_rules_desc_3.png" alt="Security Group Menu" width="400" height="400"> <br />
+            * Under "Inbound" tab, click "Edit" <br />
+            * Click "Add Rule" and do the following <br />
+                ** Enter port range of 27017 <br />
+                ** Select "My IP" option from "Source Drop-Down" menu and ensure it matches <br />
+                    *** NOTE: You can check IP address by searching "What Is My IP" on Google <br />
+            * New security rule should appear under the "Inbound" tab, with server placed behind a firewall <br />
     </p>
 
     <p>
-        PART 3: CREATING MONGODB DATABASE
-        * Enter the following commands to have necessary dependencies for MongoDB
-            # sudo apt update
-            # sudo apt install nodejs npm mongodb-clients mongodb-server
-            # sudo npm install -g n forever
-            # sudo n latest
-        * You will have to change some lines from the following configuration (conf) file.
-        WARNING: ENSURE THAT YOU HAVE TYPED IN THE INPUT CORRECTLY. TYPOS WILL CRASH YOUR PROGRAM.
-            # sudo vi /etc/mongodb.conf
-                ** Alternatively, you can use "sudo nano /etc/mongodb.conf" if accustomed to nano
-                ** Change line 11 by holding i to insert. Press esc to save and :wq to quit
-            # bind_ip = 0.0.0.0
-        * Restart MongoDB
-            # sudo service mongoDB restart
-        * Run this following command as well
-            # curl -s https://gist.githubusercontent.com/tejaswigowda/f289e9bff13d152876e8d4b3281142f8/raw/6baca5a568c221d5421d2bd8c1b6fd6f18a4649b/installNodeMongoUbuntu16.04.sh | bash
+        PART 3: CREATING MONGODB DATABASE <br />
+        * Enter the following commands to have necessary dependencies for MongoDB <br />
+            # sudo apt update <br />
+            # sudo apt install nodejs npm mongodb-clients mongodb-server <br />
+            # sudo npm install -g n forever <br />
+            # sudo n latest <br />
+        * You will have to change some lines from the following configuration (conf) file. <br />
+        WARNING: ENSURE THAT YOU HAVE TYPED IN THE INPUT CORRECTLY. TYPOS WILL CRASH YOUR PROGRAM. <br />
+            # sudo vi /etc/mongodb.conf <br />
+                ** Alternatively, you can use "sudo nano /etc/mongodb.conf" if accustomed to nano <br />
+                ** Change line 11 by holding i to insert. Press esc to save and :wq to quit <br />
+            # bind_ip = 0.0.0.0 <br />
+        * Restart MongoDB <br />
+            # sudo service mongoDB restart <br />
+        * Run this following command as well <br />
+            # curl -s https://gist.githubusercontent.com/tejaswigowda/f289e9bff13d152876e8d4b3281142f8/raw/6baca5a568c221d5421d2bd8c1b6fd6f18a4649b/installNodeMongoUbuntu16.04.sh | bash <br />
     </p>
         
     <p>
-        PART 4: LINKING TO MONGODB COMPASS FOR MANAGEMENT
-            * Change Hostname box to be server IP
-            * Enter port from security group from PART 2
-                ** 27017 is the default port range
-            * Click "connect" to connect to the MongoDB
+        PART 4: LINKING TO MONGODB COMPASS FOR MANAGEMENT <br />
+            * Change Hostname box to be server IP <br />
+            * Enter port from security group from PART 2 <br />
+                ** 27017 is the default port range <br />
+            * Click "connect" to connect to the MongoDB <br />
     </p>
 
     <p>
-        PART 5: DEPLOYMENT OF TEMPERATURE AND HUMIDITY FIRMWARE CODE
-            * Essentially, your watch-side firmware code will pass data to the relevant HTML and JS files for the webpage
-            * Plug in your watch, connected with your USB, into your computer and load the firmware
-            * There are 3 two webpages displaying analytical data for this
-                ** dailyAvg.html
-                ** history.html
-            * Push all your files to your github repository
-            * Initialize the project by typing in this command
-                # node server.js
+        PART 5: DEPLOYMENT OF TEMPERATURE AND HUMIDITY FIRMWARE CODE <br />
+            * Essentially, your watch-side firmware code will pass data to the relevant HTML and JS files for the webpage <br />
+            * Plug in your watch, connected with your USB, into your computer and load the firmware <br />
+            * There are 3 two webpages displaying analytical data for this <br />
+                ** dailyAvg.html <br />
+                ** history.html <br />
+            * Push all your files to your github repository <br />
+            * Initialize the project by typing in this command <br />
+                # node server.js <br />
     </p>
 </body>
 </html>
