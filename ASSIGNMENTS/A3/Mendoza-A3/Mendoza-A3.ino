@@ -81,9 +81,9 @@ void setup(){
 
   // Route to set GPIO to HIGH
   server.on("/bright", HTTP_GET, [](AsyncWebServerRequest *request){
-          String p = request->arg("v");
-            Serial.println(p);
-      //ledcWrite(ledChannel, map(p, 0, 100, 0, 255));
+          String p = request->arg("v"); 
+            Serial.println(p); 
+      //ledcWrite(ledChannel, map(p, 0, 100, 0, 255)); 
 
       ttgo->eTFT->fillScreen(TFT_BLACK);
       ttgo->eTFT->drawString(p,  5, 100, 4);
