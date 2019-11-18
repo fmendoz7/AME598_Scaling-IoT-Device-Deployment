@@ -1,0 +1,149 @@
+//PROGRAMMER: Francis Mendoza
+//CLASS: AME598, MW, 09:00-10:20 hrs MST
+//Assignment 6
+
+//######################################################################################
+#include <SimpleDHT.h>
+
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+//Have to connect via phone hotspot, as different Internet Protocol prevents connection to "asu" network
+const char* ssid = "Francis's Iphone";
+const char* password =  "123456789";
+
+ 
+// for DHT11, 
+//      VCC: 5V or 3V
+//      GND: GND
+//      DATA: 21
+int pinDHT11 = 21;
+SimpleDHT11 dht11(pinDHT11);
+
+//------------------------------------------------------------------------------------
+//(!!!) NEW METHOD
+//PURPOSE: 
+void sendData(float t, float h)
+{
+  if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
+ 
+    HTTPClient http;
+ 
+    http.begin("http://34.216.181.26:3000/setValue?t=" + String(t) + "&h=" + String(h)); //Specify the URL
+    int httpCode = http.GET();                                        //Make the request
+ 
+    if (httpCode > 0) { //Check for the returning code
+ 
+        String payload = http.getString();
+        Serial.println(httpCode);
+        Serial.println(payload);
+      }
+ 
+    else {
+      Serial.println("Error on HTTP request");
+    }
+ 
+    http.end(); //Free the resources
+  }
+}
+//------------------------------------------------------------------------------------
+//PURPOSE: To connect to Wifi Network
+void setup() {
+  Serial.begin(115200);
+  //WiFi.mode(WIFI_STA)
+  WiFi.begin(ssid, password);
+
+ //When WiFi not currently connected
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi..");
+  }
+ 
+  Serial.println("Connected to the WiFi network");
+}
+//------------------------------------------------------------------------------------
+//PURPOSE:
+void loop() {
+  // start working...
+  Serial.println("=================================");
+  Serial.println("Sample DHT11...");
+  
+  // read without samples.
+  byte temperature = 0;
+  byte humidity = 0;
+  int err = SimpleDHTErrSuccess;
+
+  // If unable to read anything
+  if ((err = dht11.read(&temperature, &humidity, NULL)) != SimpleDHTErrSuccess) {
+    Serial.print("Read DHT11 failed, err="); Serial.println(err);delay(1000);
+    return;
+  }
+
+  //If able to acquire temperature and humidity
+  Serial.print("Sample OK: ");
+  Serial.print((int)temperature); Serial.print(" *C, "); 
+  Serial.print((int)humidity); Serial.println(" H");
+  sendData((float)temperature, (float)humidity);
+  // DHT11 sampling rate is 1HZ.
+  delay(1500);
+  
+//################################################
+//(!!!) ADDITIONAL CODE- NOT PART OF ORIGINAL BOILERPLATE
+ int value = 0;
+
+//void loop() {
+  delay(500);
+  ++value;
+
+  Serial.print("connecting to ");
+  Serial.println(host);
+
+  // Use WiFiClient class to create TCP connections
+  WiFiClient client;
+  const int httpPort = 80;
+  if (!client.connect(host, httpPort)) 
+  {
+    Serial.println("connection failed");
+    return;
+  }
+  //--------------------------------------------------------------------------------------
+  // We now create a URI for the request
+  String path = "/setValue?t=" + String(t) + "&h=" + String(h);
+
+
+  Serial.print("Requesting URL: ");
+  Serial.println(path);
+  //--------------------------------------------------------------------------------------
+  // This will send the request to the server
+  client.print(String("GET ") + path + " HTTP/1.1\r\n" +
+               "Host: " + host + "\r\n" +
+               "Connection: close\r\n\r\n");
+  unsigned long timeout = millis();
+  while (client.available() == 0) 
+  {
+    if (millis() - timeout > 5000) 
+    {
+      Serial.println(">>> Client Timeout !");
+      client.stop();
+      return;
+    }
+  }
+
+  int lineno = 1;
+  String S1 = "";
+  String S2 = "";
+
+  //--------------------------------------------------------------------------------------
+  // Read all the lines of the reply from server and print them to Serial
+  while (client.available()) {
+    String line = client.readStringUntil('\r');
+  }
+
+  Serial.println();
+  Serial.println("closing connection");
+ //##########################################
+  print2Screen("TEMP : " + String(t) + " *F", "HUM : " + String(h) + " %");
+
+  //DHT11 sampling rate 1 HZ
+  //delay(500);
+}
