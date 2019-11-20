@@ -22,7 +22,7 @@ var VALUE1 = "";
 var VALUE2 = "";
 
 //-----------------------------------------------------------------------------------------------------
-var db = MS.db("mongodb://34.216.181.26:27017/sensorData"); //change this!!!
+var db = MS.db("mongodb://127.0.0.1/sensorData"); //change this!!!
     //REQUIRE ASSITANCE ON CHANGING MONGODB TO ROOT!
 
 app.get("/", function (req, res) {
