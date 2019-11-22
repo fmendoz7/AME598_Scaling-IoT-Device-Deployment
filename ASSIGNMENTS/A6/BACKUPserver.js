@@ -6,8 +6,8 @@
 
 //Nodemailer functionality
 var nodemailer = require('nodemailer');
-let transporter = nodemailer.createTransport('smtp://ame394fall2018%40gmail.com:francissamuelmendoza7@gmail.com');
-//let transporter = nodemailer.createTransport('smtp://ame394fall2018%40gmail.com:nodemcu1234@smtp.gmail.com');
+//let transporter = nodemailer.createTransport('smtp://ame394fall2018%40gmail.com:francissamuelmendoza7@gmail.com');
+let transporter = nodemailer.createTransport('smtp://ame394fall2018%40gmail.com:nodemcu1234@smtp.gmail.com');
 //-----------------------------------------------------------------------------------------------------
 var MS = require("mongoskin");
 var express = require("express");
@@ -16,14 +16,14 @@ var bodyParser = require('body-parser');
 var errorHandler = require('errorhandler');
 var methodOverride = require('method-override');
 var hostname = process.env.HOSTNAME || 'localhost';
-var port = 3000;
+var port = 1234;
 var VALUEt = 0;
 var VALUEh = 0;
 var VALUEtime = 0;
 var tempCheck = 0;
 //-----------------------------------------------------------------------------------------------------
 //var db = MS.db("mongodb://root:OfaZ13Q6DERS@localhost:27017/sensorData");
-var db = MS.db("mongodb://http://18.223.120.179//sensorData"); //(!!!) CHANGE THIS!!
+var db = MS.db("mongodb://root:OfaZ13Q6DERS@localhost:27017/sensorData");
 app.get("/", function (req, res) {
     res.redirect("/index.html");
 });
