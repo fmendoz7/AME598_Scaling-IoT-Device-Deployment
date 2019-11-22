@@ -1,6 +1,5 @@
 /*
   Programmer: Francis Mendoza
-  Date: 11/27/18, 18:40 hours MST
   Purpose: Calculate average
 */
 
@@ -22,8 +21,7 @@ var VALUEh = 0;
 var VALUEtime = 0;
 var tempCheck = 0;
 //-----------------------------------------------------------------------------------------------------
-//var db = MS.db("mongodb://root:OfaZ13Q6DERS@localhost:27017/sensorData");
-var db = MS.db("mongodb://root:OfaZ13Q6DERS@localhost:27017/sensorData");
+var db = MS.db("mongodb://127.0.0.1/sensorData"); //changed this from last sem!!!
 app.get("/", function (req, res) {
     res.redirect("/index.html");
 });
