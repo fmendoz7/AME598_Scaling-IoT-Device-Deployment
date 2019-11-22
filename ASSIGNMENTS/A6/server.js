@@ -26,31 +26,8 @@ app.get("/getValue", function (req, res) {
     });
 });
 
-//FUNCTION: getAverage (!!!: FROM BACKUPSERVER.JS)
-app.get("/getAverage", function (req, res) {
-    //res.writeHead(200, {'Content-Type': 'text/plain'});
-    var from = parseInt(req.query.from);
-    var to = parseInt(req.query.to);
 
-    //MONGODB
-    db.collection("data").find({ time: { $gt: from, $lt: to } }).toArray(function (err, result) {
-        console.log(err);
-        console.log(result);
-        var tempSum = 0;
-        var humSum = 0;
-        for (var i = 0; i < result.length; i++) {
-            tempSum += result[i].t || 0;
-            humSum += result[i].h || 0;
-        }
-        var tAvg = tempSum / result.length;
-        var hAvg = humSum / result.length;
-        res.send(tAvg.toString() + " " + hAvg.toString() + " " + from.toString() + "\r");
-    });
-
-});
-
-//(!!!) ORIGINAL .getAverage method
-/*app.get("/getAverage", function (req, res) { // edit this for A6
+app.get("/getAverage", function (req, res) { // edit this for A6
     //Date Parser Functionality
     var ts = parseInt(req.query.ts);
     var begin =new Date(ts);
@@ -84,7 +61,7 @@ app.get("/getAverage", function (req, res) {
         }
         res.send(JSON.stringify(ret));
     });
-});*/
+});
 
 
 app.get("/setValue", function (req, res) {
