@@ -30,11 +30,11 @@ app.get("/getValue", function (req, res) {
 app.get("/getAverage", function (req, res) { // edit this for A6
     //Date Parser Functionality
     var ts = parseInt(req.query.ts);
-    var begin = ts;
-    var end = ts;
-    /*begin.setHours(0)
-     * begin.setMinutes(0)
-     */
+    var begin =new Date(ts);
+    var end = new Date(ts);
+    begin.setHours(0)
+    begin.setMinutes(0)
+    begin.setSeconds(0)
 
     db.collection("data").find({ ts: { $lte: end.getTime() }, ts: { $gt: begin.getTime() } }).toArray(function (err, result) {
         console.log(err);
