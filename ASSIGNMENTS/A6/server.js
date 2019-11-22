@@ -32,9 +32,13 @@ app.get("/getAverage", function (req, res) { // edit this for A6
     var ts = parseInt(req.query.ts);
     var begin =new Date(ts);
     var end = new Date(ts);
-    begin.setHours(0)
-    begin.setMinutes(0)
-    begin.setSeconds(0)
+    begin.setHours(0);
+    begin.setMinutes(0);
+    begin.setSeconds(0);
+
+    end.setHours(23);
+    end.setMinutes(59);
+    end.setSeconds(59);
 
     db.collection("data").find({ ts: { $lte: end.getTime() }, ts: { $gt: begin.getTime() } }).toArray(function (err, result) {
         console.log(err);
