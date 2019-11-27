@@ -21,7 +21,7 @@ void sendData(float t, float h)
  
     HTTPClient http;
  
-    http.begin("http://127.0.0.1:3000/setValue?t=" + String(t) + "&h=" + String(h)); //Specify the URL
+    http.begin("http://18.223.120.179:3000/setValue?t=" + String(t) + "&h=" + String(h)); //Specify the URL
     int httpCode = http.GET();                                        //Make the request
  
     if (httpCode > 0) { //Check for the returning code
