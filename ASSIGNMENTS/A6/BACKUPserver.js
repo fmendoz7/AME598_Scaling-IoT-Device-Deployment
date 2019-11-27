@@ -3,6 +3,8 @@
   Purpose: Calculate average
 */
 
+//(!!!) WORKING COPY
+
 //Nodemailer functionality
 var nodemailer = require('nodemailer');
 //let transporter = nodemailer.createTransport('smtp://ame394fall2018%40gmail.com:francissamuelmendoza7@gmail.com');
@@ -118,7 +120,13 @@ function sendEmail(temp, time) {
 
     console.log('Sending Mail');
     transporter.sendMail(message, function (err, result) {
-        console.log(err, result);
+        //console.log(err, result);
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log('Email Sent: ' + result.response);
+        }
     });
 }
 //-----------------------------------------------------------------------------------------------------

@@ -1,85 +1,136 @@
-//PROGRAMMER: Francis Mendoza
-//AME598- Scaling IOT Device Deployment
+/*
+  Programmer: Francis Mendoza
+  Purpose: Calculate average
+*/
 
+//(!!!) WORKING COPY
+
+//Nodemailer functionality
+var nodemailer = require('nodemailer');
+//let transporter = nodemailer.createTransport('smtp://ame394fall2018%40gmail.com:francissamuelmendoza7@gmail.com');
+let transporter = nodemailer.createTransport('smtp://ame394fall2018%40gmail.com:nodemcu1234@smtp.gmail.com');
+//-----------------------------------------------------------------------------------------------------
+var MS = require("mongoskin");
 var express = require("express");
 var app = express();
-var MS = require('mongoskin');
 var bodyParser = require('body-parser');
 var errorHandler = require('errorhandler');
 var methodOverride = require('method-override');
 var hostname = process.env.HOSTNAME || 'localhost';
 var port = 3000;
-var VALUE1 = "";
-var VALUE2 = "";
-
-
-var db = MS.db("mongodb://127.0.0.1/sensorData"); //change this!!!
-
+var VALUEt = 0;
+var VALUEh = 0;
+var VALUEtime = 0;
+var tempCheck = 0;
+//-----------------------------------------------------------------------------------------------------
+var db = MS.db("mongodb://127.0.0.1/sensorData"); //changed this from last sem!!!
 app.get("/", function (req, res) {
-    res.send("Temperature: " + (VALUE1 * 1.8 + 32) + "F \r Humidity: " + VALUE2 + "%");
+    res.redirect("/index.html");
 });
+//-----------------------------------------------------------------------------------------------------
+//FUNCTION: getAverage
+app.get("/getAverage", function (req, res) {
+    //res.writeHead(200, {'Content-Type': 'text/plain'});
+    var from = parseInt(req.query.from);
+    var to = parseInt(req.query.to);
 
-app.get("/getValue", function (req, res) {
-    var ts = parseInt(req.query.ts);
-    db.collection("data").findOne({ ts: { $lte: ts }, ts: { $gt: 0 } }, function (err, result) {
-        res.send(JSON.stringify(result));
-    });
-});
-
-
-app.get("/getAverage", function (req, res) { // edit this for A6
-    //Date Parser Functionality
-    var ts = parseInt(req.query.ts);
-    var begin =new Date(ts);
-    var end = new Date(ts);
-    begin.setHours(0);
-    begin.setMinutes(0);
-    begin.setSeconds(0);
-
-    end.setHours(23);
-    end.setMinutes(59);
-    end.setSeconds(59);
-
-    db.collection("data").find({ ts: { $lte: end.getTime() }, ts: { $gt: begin.getTime() } }).toArray(function (err, result) {
+    //MONGODB
+    db.collection("data").find({ time: { $gt: from, $lt: to } }).toArray(function (err, result) {
         console.log(err);
         console.log(result);
-
         var tempSum = 0;
         var humSum = 0;
-
         for (var i = 0; i < result.length; i++) {
             tempSum += result[i].t || 0;
             humSum += result[i].h || 0;
         }
-
         var tAvg = tempSum / result.length;
         var hAvg = humSum / result.length;
+        res.send(tAvg.toString() + " " + hAvg.toString() + " " + from.toString() + "\r");
+    });
 
-        var ret = { // calculate from result
-            t: tAvg,
-            h: hAvg
-        }
-        res.send(JSON.stringify(ret));
+});
+//-----------------------------------------------------------------------------------------------------
+//FUNCTION: getLatest
+app.get("/getLatest", function (req, res) {
+    db.collection("data").find({}).sort({ time: -1 }).limit(10).toArray(function (err, result) {
+        res.send(JSON.stringify(result));
     });
 });
-
-
+//-----------------------------------------------------------------------------------------------------
+//FUNCTION: getData
+app.get("/getData", function (req, res) {
+    var from = parseInt(req.query.from);
+    var to = parseInt(req.query.to);
+    db.collection("data").find({ time: { $gt: from, $lt: to } }).sort({ time: -1 }).toArray(function (err, result) {
+        res.send(JSON.stringify(result));
+    });
+});
+//-----------------------------------------------------------------------------------------------------
+//FUNCTION: getValue
+app.get("/getValue", function (req, res) {
+    //res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.send(VALUEt.toString() + " " + VALUEh + " " + VALUEtime + "\r");
+});
+//-----------------------------------------------------------------------------------------------------
+//FUNCTION: setValue
 app.get("/setValue", function (req, res) {
-    var v1 = decodeURIComponent(req.query.t);
-    var v2 = decodeURIComponent(req.query.h);
-    VALUE1 = v1;
-    VALUE2 = v2;
-    var newObj = {
-        t: v1,
-        h: v2,
-        ts: new Date().getTime()
+    VALUEt = parseFloat(req.query.t);
+    VALUEh = parseFloat(req.query.h);
+    VALUEtime = new Date().getTime();
+    var dataObj =
+    {
+        t: VALUEt,
+        h: VALUEh,
+        time: VALUEtime
+    };
+
+    //Condition for sensor to trip after 100*F
+    if (VALUEt > 10) {
+        var date = new Date(); // get the current date.
+        if (date.getTime() >= (tempCheck + 300000)) { //Condition to send after 5 minutes
+            tempCheck = date.getTime();
+            sendEmail(VALUEt, date);
+        }
+    }
+    db.collection("data").insert(dataObj, function (err, result) {
+        console.log("added data: " + JSON.stringify(dataObj));
+    });
+    res.send(VALUEtime.toString());
+});
+//-----------------------------------------------------------------------------------------------------
+//FUNCTION: sendEmail
+function sendEmail(temp, time) {
+    let message =
+    {
+        // Comma separated list of recipients
+        to: 'Francis Mendoza <francissamuelmendoza7@gmail.com>',
+        subject: 'IoT Sensor Alert- Warning',
+        // plaintext body
+
+        //MODIFY TO GET REAL TIME STATEMENT
+        text: 'Sensor tripped at ' + time + '. Temperature exceeded 100*F. Current Temperature: ' + temp,
+        // HTML body
+
+        //Can view as plain text HTML
+        html: '<p> Sensor tripped at ' + time + '. Temperature exceeded 100*F. Current Temperature: ' + temp + '</p>',
+        watchHtml: '<p> Sensor tripped at ' + time + '. Temperature exceeded 100*F. Current Temperature: ' + temp + '</p>'
     }
 
-    db.collection("data").insert(newObj, function (err, result) { });
 
-    res.send(VALUE1 + "\n" + VALUE2);
-});
-
+    console.log('Sending Mail');
+    transporter.sendMail(message, function (err, result) {
+        //console.log(err, result);
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log('Email Sent: ' + result.response);
+        }
+    });
+}
+//-----------------------------------------------------------------------------------------------------
+//ASSORTED FUNCTIONS
 app.use(methodOverride());
 app.use(bodyParser());
 app.use(express.static(__dirname + '/public'));
