@@ -23,7 +23,8 @@ int pinDHT11 = D4;
 SimpleDHT11 dht11(pinDHT11);
   //(???) unknown command 
 //-----------------------------------------------------------
-#include <ESP8266WiFi.h>
+//#include <ESP8266WiFi.h>
+#include <WiFi.h>
   //Preprocessor command that enables Wifi connection
 
 //CREATE WIFI NETWORK AND PASSWORD THAT LIMITS ACCESS TO WEBPAGE
@@ -42,7 +43,8 @@ const char* password = "12345678";*/
 const char* host = "18.223.120.179";
 
 //FINAL nA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#include <Servo.h>
+//USED ESP32 servo library instead
+#include <ESP32Servo.h>
 Servo needle;
 
 int needleValT = 0;
