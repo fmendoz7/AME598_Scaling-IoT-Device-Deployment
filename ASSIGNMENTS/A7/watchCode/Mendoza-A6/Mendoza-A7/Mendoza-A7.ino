@@ -3,8 +3,8 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
  
-const char* ssid = "asu";
-const char* password =  "ASUHanchiBoy77";
+const char* ssid = "Francis's iPhone";
+const char* password =  "123456789";
 
  
 // for DHT11, 
