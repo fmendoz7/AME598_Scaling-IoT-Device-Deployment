@@ -2,10 +2,6 @@
  * Programmer: Francis Mendoza
  * Function: IoT sensor firmware to transmit temp and humidity data 
  *           in concert w tertiary applications 
- * Iteration: 1.3
- * Most Recent Change: 11-17-2018
- *  > Added possible delay for DHT11- 500 ms 
- *  > Boilerplate for Wifi Hotspot for in-class demonstration
  */
 //##################################################################
 #include <Wire.h> 
@@ -21,19 +17,14 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 int pinDHT11 = D4;
   //Connect DHT11 to D4 pin
 SimpleDHT11 dht11(pinDHT11);
-  //(???) unknown command 
 //-----------------------------------------------------------
 //#include <ESP8266WiFi.h>
 #include <WiFi.h>
   //Preprocessor command that enables Wifi connection
 
 //CREATE WIFI NETWORK AND PASSWORD THAT LIMITS ACCESS TO WEBPAGE
-const char* ssid = "asu";
-const char* password =  "ASUHanchiBoy77";
-
-  //(!!!)PAY ATTENTION TO DETAIL (SYNTAX)
-/*const char* ssid     = "Tejaswi";
-const char* password = "12345678";*/
+const char* ssid = "Francis's iPhone";
+const char* password =  "123456789";
 
   //REQUIRED: Wifi Hotspot details for in-class demonstration
   /* const char* ssid     = <name>;
@@ -60,6 +51,7 @@ void setup()
   // initialize the LCD
 
   //FINAL nA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //(!!!) WHAT PORT DO YOU USE FOR THE SERVO MOTOR!!!
     needle.attach(D7);
 
     pinMode(tLight, OUTPUT);
