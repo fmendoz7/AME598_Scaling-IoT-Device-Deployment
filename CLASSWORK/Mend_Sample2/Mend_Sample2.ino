@@ -43,6 +43,9 @@ int pos = 0;    // variable to store the servo position
 int servoPin = 21;
 int servoPin2 = 22;
 
+int needleValT = 0;
+int needleValH = 0;
+
 void setup() {
   myservo.setPeriodHertz(50);    // standard 50 hz servo
   myservo.attach(servoPin, 1000, 2000); // attaches the servo on pin 18 to the servo object
@@ -55,16 +58,17 @@ void setup() {
 }
 
 void loop() {
+  needleValT = map(33.3, 0, 100, 30, 150);
+  needleValH = map(10, 0, 100, 30, 150);
 
-  for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    myservo.write(pos);    // tell servo to go to position in variable 'pos'
+  myservo2.write(needleValT);
+  Serial.println("Forward");
+  delay(10000);
+  //myservo2.write(needleValH);
+  //Serial.println("Backward");
+  //delay(10000);
+  /*for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
     myservo2.write(pos);
     delay(15);             // waits 15ms for the servo to reach the position
-  }
-  for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-    myservo.write(pos);    // tell servo to go to position in variable 'pos'
-    myservo2.write(pos);
-    delay(15);             // waits 15ms for the servo to reach the position
-  }
+  }*/
 }

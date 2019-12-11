@@ -1,11 +1,15 @@
 /* Sweep
  by BARRAGAN <http://barraganstudio.com>
  This example code is in the public domain.
+
  modified 8 Nov 2013
  by Scott Fitzgerald
+
  modified for the ESP32 on March 2017
  by John Bennett
+
  see http://www.arduino.cc/en/Tutorial/Sweep for a description of the original code
+
  * Different servos require different pulse widths to vary servo angle, but the range is 
  * an approximately 500-2500 microsecond pulse every 20ms (50Hz). In general, hobbyist servos
  * sweep 180 degrees, so the lowest number in the published range for a particular servo
@@ -43,12 +47,23 @@ int pos = 0;    // variable to store the servo position
 int servoPin = 21;
 int servoPin2 = 22;
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int buttonHState = 0;
+  int buttonTState = 0;
+  int buttonFluxState = 0;
+
+  int needleValT = 0;
+  int needleValH = 0;
+
+  int buttonFlux = digitalRead(36); //(!!!) Supposedly maps to user button
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 void setup() {
-  myservo.setPeriodHertz(50);    // standard 50 hz servo
-  myservo.attach(servoPin, 1000, 2000); // attaches the servo on pin 18 to the servo object
-  // using default min/max of 1000us and 2000us
-  // different servos may require different min/max settings
-  // for an accurate 0 to 180 sweep
+	myservo.setPeriodHertz(50);    // standard 50 hz servo
+	myservo.attach(servoPin, 1000, 2000); // attaches the servo on pin 18 to the servo object
+	// using default min/max of 1000us and 2000us
+	// different servos may require different min/max settings
+	// for an accurate 0 to 180 sweep
 
   myservo2.setPeriodHertz(50);    // standard 50 hz servo
   myservo2.attach(servoPin2, 1000, 2000); // attaches the servo on pin 18 to the servo object
@@ -56,15 +71,44 @@ void setup() {
 
 void loop() {
 
-  for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    myservo.write(pos);    // tell servo to go to position in variable 'pos'
+	/*for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+		// in steps of 1 degree
+		myservo.write(pos);    // tell servo to go to position in variable 'pos'
     myservo2.write(pos);
-    delay(15);             // waits 15ms for the servo to reach the position
+		delay(15);             // waits 15ms for the servo to reach the position
+	}
+	for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+		myservo.write(pos);    // tell servo to go to position in variable 'pos'
+    myservo2.write(pos);
+		delay(15);             // waits 15ms for the servo to reach the position
+	}*/
+  needleValT = map(45, 0, 100, 30, 150); //sample degree (45*)
+  needleValH = map(135, 0, 100, 30, 150); //sample degree (125*)
+
+  if (buttonFlux == 0) {  
+    buttonTState = 1;
+    buttonHState = 0;
   }
-  for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-    myservo.write(pos);    // tell servo to go to position in variable 'pos'
-    myservo2.write(pos);
-    delay(15);             // waits 15ms for the servo to reach the position
+    
+  if (buttonFlux == 1) {  
+    buttonHState = 1;
+    buttonTState = 0;
+  }
+
+  Serial.println(buttonHState); 
+  Serial.println(buttonTState);
+ 
+ //(!!!) Displays Temperature By Default
+  if(buttonFluxState == 0){
+    myservo2.write(needleValT);
+    //digitalWrite(tLight, HIGH);
+    //digitalWrite(hLight, LOW); 
+  }
+
+  //(!!!) Displays Humidity If Button Is 1
+  else{
+    myservo2.write(needleValH);
+    //digitalWrite(hLight, HIGH);
+    //digitalWrite(tLight, LOW);
   }
 }

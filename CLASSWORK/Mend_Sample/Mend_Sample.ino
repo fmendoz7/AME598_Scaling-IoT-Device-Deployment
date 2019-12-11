@@ -32,6 +32,9 @@
  * if you are particular, adjust the min and max values to match your needs.
  */
 
+#include <TTGO.h>
+TTGOClass *ttgo;
+
 #include <ESP32Servo.h>
 
 Servo myservo;  // create servo object to control a servo
@@ -43,6 +46,22 @@ int pos = 0;    // variable to store the servo position
 int servoPin = 21;
 int servoPin2 = 22;
 
+void pressed()
+{
+    uint16_t color = random(0xFFFF);
+    ttgo->eTFT->fillScreen(color);
+    ttgo->eTFT->setTextColor(color, TFT_WHITE);
+    ttgo->eTFT->drawString("HUMIDITY",  5, 100, 4);
+}
+
+void released()
+{
+    uint16_t color = random(0xFFFF);
+    ttgo->eTFT->fillScreen(color);
+    ttgo->eTFT->setTextColor(color, TFT_WHITE);
+    ttgo->eTFT->drawString("TEMPERATURE",  5, 100, 4);
+}
+
 void setup() {
   myservo.setPeriodHertz(50);    // standard 50 hz servo
   myservo.attach(servoPin, 1000, 2000); // attaches the servo on pin 18 to the servo object
@@ -52,6 +71,20 @@ void setup() {
 
   myservo2.setPeriodHertz(50);    // standard 50 hz servo
   myservo2.attach(servoPin2, 1000, 2000); // attaches the servo on pin 18 to the servo object
+
+    Serial.begin(115200);
+    ttgo = TTGOClass::getWatch();
+    ttgo->begin();
+    ttgo->openBL();
+
+    ttgo->eTFT->fillScreen(TFT_BLACK);
+    ttgo->eTFT->setTextColor(TFT_WHITE, TFT_BLACK);
+    ttgo->eTFT->setTextFont(4);
+    ttgo->eTFT->drawString("User Button released",  5, 100, 4);
+
+    ttgo->button->setPressedHandler(pressed);
+    ttgo->button->setReleasedHandler(released);
+
 }
 
 void loop() {
@@ -67,4 +100,6 @@ void loop() {
     myservo2.write(pos);
     delay(15);             // waits 15ms for the servo to reach the position
   }
+
+  ttgo->button->loop();
 }

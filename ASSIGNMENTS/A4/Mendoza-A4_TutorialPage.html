@@ -9,7 +9,7 @@
     <p>
         PROGRAMMER: Francis Mendoza <br />
         CLASS: AME598- Scaling IOT Device Deployment <br />
-        ASSIGNMENT: A3, Tutorial <br />
+        ASSIGNMENT: A4, Tutorial <br />
     </p>
     <p>
         This Tutorial is about configuring a web application that displays a data payload to the webpage, <br />
@@ -25,64 +25,114 @@
     </p>
     <p>
         PART 1: INSTANTIATING UBUNTU SERVER INSTANCE <br />
-            * Sign into your Amazon AWS account at https://aws.amazon.com/ <br />
-            * Under "All Services", select EC2 link listed under "Compute" <br />
-            * Click the launch instance button, located under the "Create Instance" header <br />
-            * Under the Ubuntu Server item, click "Select" <br />
-            * Ensure you have selected "Free Tier" before clicking "Review and Launch" <br />
-            * In order to access the server, you need to create an SSH Keypair <br />
-                ** NOTE: Be sure to save the .pem file in a memorable and safe location! <br />
-            * Use the following commands to use the keypair to access your server <br /> 
-                # chmod 400 (~path~) <br />
-                # ssh -i (~path~) ubuntu@(~ip address~) <br />
-            * Enter yes when asking about the authenticity of the host <br />
+        * Sign into your Amazon AWS account at https://aws.amazon.com/ <br />
+        * Under "All Services", select EC2 link listed under "Compute" <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96861_FM-AME598-A4_P1.JPG" alt="Pic 1" width="500" height="600" <br />
+        <span style="white-space: pre-line">
+        </span>
+        * Click the launch instance button, located under the "Create Instance" header <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96862_FM-AME598-A4_P2.JPG" alt="Pic 2" width="600" height="400" <br />
+        <span style="white-space: pre-line">
+        </span>
+        * Under the Ubuntu Server item, click "Select" <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96863_FM-AME598-A4_P3.JPG" alt="Pic 3" width="600" height="400" <br />
+        <span style="white-space: pre-line">
+        </span>
+        * Ensure you have selected "Free Tier" before clicking "Review and Launch" <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96864_FM-AME598-A4_P5.JPG" alt="Pic 5 revised" width="600" height="400" <br />
+        <span style="white-space: pre-line">
+        </span>
+        * In order to access the server, you need to create an SSH Keypair <br />
+        ** NOTE: Be sure to save the .pem file in a memorable and safe location! <br />
+        * Use the following commands to use the keypair to access your server <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96868_FM-AME598-A4_P6.JPG" alt="Pic 6" width="600" height="400" <br />
+        <span style="white-space: pre-line">
+        </span>
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96869_FM-AME598-A4_P7.JPG" alt="Pic 7" width="600" height="400" <br />
+        <span style="white-space: pre-line">
+        </span>
+        # chmod 400 (~path~) <br />
+        # ssh -i (~path~) ubuntu@(~ip address~) <br />
+        * Enter yes when asking about the authenticity of the host <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96871_FM-AME598-A4_P8.JPG" alt="Pic 8" width="600" height="400" <br />
+                                                                                                                                                   <span style="white-space: pre-line">
+                                                                                                                                                   </span>
     </p>
 
     <p>
         PART 2: SECURING UBUNTU SERVER <br />
-            * Navigate to instance and click "launch-wizard" link under "Security Groups" header of description tab <br />
-            * Under "Inbound" tab, click "Edit" <br />
-            * Click "Add Rule" and do the following <br />
-                ** Enter port range of 27017 <br />
-                ** Select "My IP" option from "Source Drop-Down" menu and ensure it matches <br />
-                    *** NOTE: You can check IP address by searching "What Is My IP" on Google <br />
-            * New security rule should appear under the "Inbound" tab, with server placed behind a firewall <br /> 
+        * Navigate to instance and click "launch-wizard" link under "Security Groups" header of description tab <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96872_FM-AME598-A4_P9.JPG" alt="Pic 9" width="600" height="400" <br />
+                                                                                                                                                   <span style="white-space: pre-line">
+                                                                                                                                                   </span>
+        * Under "Inbound" tab, click "Edit" <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96873_FM-AME598-A4_P10.JPG" alt="Pic 10" width="600" height="400" <br />
+                                                                                                                                                     <span style="white-space: pre-line">
+                                                                                                                                                     </span>
+        * Click "Add Rule" and do the following <br />
+        ** Enter port range of 27017 <br />
+        ** Select "My IP" option from "Source Drop-Down" menu and ensure it matches <br />
+        *** NOTE: You can check IP address by searching "What Is My IP" on Google <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96874_FM-AME598-A4_P11.JPG" alt="Pic 11" width="600" height="400" <br />
+                                                                                                                                                     <span style="white-space: pre-line">
+                                                                                                                                                     </span>
+        * New security rule should appear under the "Inbound" tab, with server placed behind a firewall <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96875_FM-AME598-A4_P12.JPG" alt="Pic 12" width="600" height="400" <br />
+                                                                                                                                                     <span style="white-space: pre-line">
+                                                                                                                                                     </span>
     </p>
 
     <p>
         PART 3: CREATING MONGODB DATABASE <br />
         * Enter the following commands to have necessary dependencies for MongoDB <br />
-            # sudo apt update <br />
-            # sudo apt install nodejs npm mongodb-clients mongodb-server <br />
-            # sudo npm install -g n forever <br />
-            # sudo n latest <br />
+        # sudo apt update <br />
+        # sudo apt install nodejs npm mongodb-clients mongodb-server <br />
+        # sudo npm install -g n forever <br />
+        # sudo n latest <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96876_FM-AME598-A4_P13.JPG" alt="Pic 13" width="600" height="400" <br />
+                                                                                                                                                     <span style="white-space: pre-line">
+                                                                                                                                                     </span>
         * You will have to change some lines from the following configuration (conf) file. <br />
         WARNING: ENSURE THAT YOU HAVE TYPED IN THE INPUT CORRECTLY. TYPOS WILL CRASH YOUR PROGRAM. <br />
-            # sudo vi /etc/mongodb.conf <br />
-                ** Alternatively, you can use "sudo nano /etc/mongodb.conf" if accustomed to nano <br />
-                ** Change line 11 by holding i to insert. Press esc to save and :wq to quit <br />
-            # bind_ip = 0.0.0.0 <br />
+        # sudo vi /etc/mongodb.conf <br />
+        ** Alternatively, you can use "sudo nano /etc/mongodb.conf" if accustomed to nano <br />
+        ** Change line 11 by holding i to insert. Press esc to save and :wq to quit <br />
+        # bind_ip = 0.0.0.0 <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96877_FM-AME598-A4_P14.JPG" alt="Pic 14" width="500" height="600" <br />
+                                                                                                                                                     <span style="white-space: pre-line">
+                                                                                                                                                     </span>
         * Restart MongoDB <br />
-            # sudo service mongoDB restart <br />
+        # sudo service mongoDB restart <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96878_FM-AME598-A4_P15.JPG" alt="Pic 15" width="500" height="600" <br />
+                                                                                                                                                     <span style="white-space: pre-line">
+                                                                                                                                                     </span>
         * Run this following command as well <br />
-            # curl -s https://gist.githubusercontent.com/tejaswigowda/f289e9bff13d152876e8d4b3281142f8/raw/6baca5a568c221d5421d2bd8c1b6fd6f18a4649b/installNodeMongoUbuntu16.04.sh | bash <br />
+        # curl -s https://gist.githubusercontent.com/tejaswigowda/f289e9bff13d152876e8d4b3281142f8/raw/6baca5a568c221d5421d2bd8c1b6fd6f18a4649b/installNodeMongoUbuntu16.04.sh | bash <br />
     </p>
         
     <p>
         PART 4: LINKING TO MONGODB COMPASS FOR MANAGEMENT <br />
-            * Change Hostname box to be server IP <br />
-            * Enter port from security group from PART 2 <br />
-                ** 27017 is the default port range <br />
-            * Click "connect" to connect to the MongoDB <br />
+        * Change Hostname box to be server IP <br />
+        * Enter port from security group from PART 2 <br />
+        ** 27017 is the default port range <br />
+        * Click "connect" to connect to the MongoDB <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96879_FM-AME598-A4_P16.JPG" alt="Pic 16" width="600" height="400" <br />
+        <span style="white-space: pre-line">
+        </span>
     </p>
 
     <p>
         PART 5: DEPLOYMENT OF FIRMWARE CODE <br />
-            * Essentially, your watch-side firmware code will pass data to the relevant HTML and JS files for the webpage <br />
-            * Plug in your watch, connected with your USB, into your computer and load the firmware <br />
-            * Push all your files to your github repository <br />
-            * Initialize the project by typing in this command <br />
-                # node (~relevant js file) <br />
+        * Essentially, your watch-side firmware code will pass data to the relevant HTML and JS files for the webpage <br />
+        * Plug in your watch, connected with your USB, into your computer and load the firmware <br />
+        * Push all your files to your github repository <br />
+        * Log into your instance on EC2 and cd into the relevant project directory<br />
+        * Initialize the project by typing in this command <br />
+        # node (~relevant js file) <br />
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96880_FM-AME598-A4_P17.JPG" alt="Pic 17" width="600" height="400" <br />
+        <span style="white-space: pre-line">
+        </span>
+        <img src="https://cms.jotform.com/uploads/image_upload/image_upload/global/96918_FM-AME598-A4_P18.JPG" alt="Pic 18" width="500" height="600" <br />
     </p>
 </body>
 </html>

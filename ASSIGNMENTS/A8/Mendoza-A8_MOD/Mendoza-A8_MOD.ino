@@ -3,23 +3,16 @@
  * Function: IoT sensor firmware to transmit temp and humidity data 
  *           in concert w tertiary applications 
  */
-//*************************************************************
-#include "Button2.h";
-#define BUTTON_A_PIN  36
-Button2 buttonA = Button2(BUTTON_A_PIN);
-//*************************************************************
-
+//##################################################################
+#include <TTGO.h>
+TTGOClass *ttgo;
 
 #include <Wire.h> 
-  //Preprocessor command that (passes data?)
 #include <LiquidCrystal_I2C.h>
-  // Set the LCD address to 0x27 for a 16 chars and 2 line display
-
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 //Connect to D1 and D2 on nodemcu
 
 #include <SimpleDHT.h>
-  //Preprocessor command that accesses DHT11 temp & humidity sensor
 int pinDHT11 = 21;
   //Connect DHT11 to D4 pin
 SimpleDHT11 dht11(pinDHT11);
@@ -39,37 +32,59 @@ const char* password =  "123456789";
 //IP ADDRESS FOR AWS LIGHTSAIL INSTANCE OF SERVER
 const char* host = "18.223.120.179";
 
+//FINAL nA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //USED ESP32 servo library instead
 #include <ESP32Servo.h>
 Servo needle;
 
 int needleValT = 0;
 int needleValH = 0;
+
+int buttonHState = 0;
+int buttonTState = 0;
+int buttonFluxState = 0;
 //-----------------------------------------------------------
+void pressed()
+{
+    uint16_t color = random(0xFFFF);
+    ttgo->eTFT->fillScreen(color);
+    ttgo->eTFT->setTextColor(color, TFT_WHITE);
+    ttgo->eTFT->drawString("MODE: HUMIDITY",  5, 100, 4);
+}
+
+void released()
+{
+    uint16_t color = random(0xFFFF);
+    ttgo->eTFT->fillScreen(color);
+    ttgo->eTFT->setTextColor(color, TFT_WHITE);
+    ttgo->eTFT->drawString("MODE: TEMPERATURE",  5, 100, 4);
+}
+
 void setup()
 {
+    Serial.begin(115200);
+    ttgo = TTGOClass::getWatch();
+    ttgo->begin();
+    ttgo->openBL();
+
+    ttgo->eTFT->fillScreen(TFT_BLACK);
+    ttgo->eTFT->setTextColor(TFT_WHITE, TFT_BLACK);
+    ttgo->eTFT->setTextFont(4);
+     ttgo->eTFT->drawString("MODE: TEMPERATURE",  5, 100, 4);
+
+    ttgo->button->setPressedHandler(pressed);
+    ttgo->button->setReleasedHandler(released);
+
+  
   Serial.begin(115200);
+  // initialize the LCD
 
   //FINAL nA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //(!!) BUTTON FUNCTIONALITY
-    Serial.begin(9600);
-    delay(50);
-    Serial.println("\n\nButton Demo");
-
-    //*************************************************************
-    // buttonA.setChangedHandler(changed);
-    // buttonA.setPressedHandler(pressed);
-    buttonA.setReleasedHandler(released);
-  
-    // buttonA.setTapHandler(tap);
-    buttonA.setClickHandler(click);
-    buttonA.setLongClickHandler(longClick);
-    buttonA.setDoubleClickHandler(doubleClick);
-    buttonA.setTripleClickHandler(tripleClick);
-    //*************************************************************
-  
     //(!!!) WHAT PORT DO YOU USE FOR THE SERVO MOTOR!!!
     needle.attach(22);
+
+    //pinMode(tLight, OUTPUT);
+    //pinMode(hLight, OUTPUT);
 
     //(!!!) WHAT HAPPENS WHEN WE COMMENT OUT THIS LINE?
     //pinMode(D3, INPUT_PULLUP);
@@ -80,6 +95,7 @@ void setup()
 
   print2Screen("LOADING...", "");
 
+  //#####################################
   //Serial.println();
   //Serial.println();
   //Serial.print("Connecting to ");
@@ -105,39 +121,8 @@ void setup()
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
-}
 
-//FINAL nA
-int buttonHState = 0;
-int buttonTState = 0;  
-int buttonFluxState = 0;
-//-----------------------------------------------------------
-void pressed(Button2& btn) {
-    Serial.println("pressed");
-    buttonFluxState = 1;
-}
-void released(Button2& btn) {
-    Serial.print("released: ");
-    Serial.println(btn.wasPressedFor());
-    buttonFluxState = 0;
-}
-void changed(Button2& btn) {
-    Serial.println("changed");
-}
-void click(Button2& btn) {
-    Serial.println("click\n");
-}
-void longClick(Button2& btn) {
-    Serial.println("long click\n");
-}
-void doubleClick(Button2& btn) {
-    Serial.println("double click\n");
-}
-void tripleClick(Button2& btn) {
-    Serial.println("triple click\n");
-}
-void tap(Button2& btn) {
-    Serial.println("tap");
+  //#####################################
 }
 //-----------------------------------------------------------
 void print2Screen(String s1, String s2)
@@ -150,11 +135,9 @@ void print2Screen(String s1, String s2)
 
 float t = 0;
 float h = 0;
+//-----------------------------------------------------------
 void loop()
 {
-  //(!!) BUTTON FUNCTIONALITY
-  buttonA.loop();
-
   byte temperature = 0;
   byte humidity = 0;
   int err = SimpleDHTErrSuccess;
@@ -188,12 +171,12 @@ void loop()
 
       int buttonFlux = digitalRead(36);
       
-      if (buttonFlux == 0) {  
+      if (pressed) {  
         buttonTState = 1;
         buttonHState = 0;
       }
     
-      if (buttonFlux == 1) {  
+      if (released) {  
         buttonHState = 1;
         buttonTState = 0;
       }
@@ -277,4 +260,6 @@ void loop()
 
   //DHT11 sampling rate 1 HZ
   //delay(500);
+
+    ttgo->button->loop();
 }
